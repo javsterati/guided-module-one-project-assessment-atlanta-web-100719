@@ -4,5 +4,3 @@ class Users < ActiveRecord::Base
 
 end 
 
-
-;ladhsfl;adfhsladfhsl;adfhsla;dfhslhasd;fhl
