@@ -1,15 +1,24 @@
 
 class CommandLineInterface
-    city = ["Atlanta", "Boston", "New York City", "Washington, D.C"]
+    
         def greet
+            font = TTY::Font.new(:straight)
+            puts font.write("BIRD")
             puts "Welcome to Bird Chargers!"
             puts "Where you can make money charging Birds!"
-            puts " "
-            puts "========================"
-            puts " "
+            puts "============================="
             end
 
-        def make_user
+            def users_prompted
+                prompt = TTY::Prompt.new
+
+                prompt.select("Are you a new user?") do |menu|
+                    menu.choice "Yes", -> { make_user }
+                    menu.choice "No"
+                end 
+            end
+       
+            def make_user
             puts "whats your name?"
             name = gets.chomp
             puts "what city are you in?"
