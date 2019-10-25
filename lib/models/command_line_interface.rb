@@ -31,6 +31,7 @@ class CommandLineInterface
         def balance(userb)
             prompt = TTY::Prompt.new
             blob = userb
+            puts "  "
             puts "Your current balance is:"
             puts userb.balance
             puts " "
@@ -42,6 +43,7 @@ class CommandLineInterface
         end 
 
         def pickfive(user)
+            puts " "
             puts "Thank you #{user.username}, We've added $25 to your balance!"
             user.balance + 25.0
             puts "Your new balance is #{user.balance}"
@@ -49,10 +51,12 @@ class CommandLineInterface
         end
 
         def pickone(user)
+            puts " "
             puts "Thank you #{user.username}, We've added $5 to your balance!"
         end 
 
         def pickmax(user, amount)
+            puts " "
             puts "Thank you #{user.username}, You picked up #{amount} birds and We've added $#{amount * 5} to your balance!"
         end
 
@@ -62,6 +66,7 @@ class CommandLineInterface
                 city = current_user.location
                 available_scooters = Bird.all.select { |bird| bird.location == city }
                 chargable_scooters = available_scooters.select {|bird| bird.battery_percentage <= 75.0}
+                    puts "   "
                     puts "There are #{chargable_scooters.count} available scooters to charge in your area!"
                     prompt.select("How many would you like to pick up and charge?") do |menu|
                         menu.choice "PICK UP 1 SCOOTER", -> { pickone(blanky) }
@@ -116,7 +121,7 @@ class CommandLineInterface
                             puts " Welcome #{find_result.username}!"
                             puts " "
                             prompt.select("What would you like to do?") do |menu|
-                                puts " "
+                                puts "     "
                                 menu.choice "View my Balance", -> { balance(find_result)}
                                 menu.choice "Charge Birds", -> { birds(find_result) }
                                 menu.choice "Exit", -> { exit }
