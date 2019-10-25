@@ -27,6 +27,8 @@ ActiveRecord::Schema.define(version: 3) do
     t.string "name"
     t.float "balance"
     t.string "location"
+    t.string "username"
+    t.string "password"
   end
-
+  
 end
