@@ -20,7 +20,8 @@ class CommandLineInterface
 
         def orders(user)
         prompt = TTY::Prompt.new
-           prior_orders = Order.find_by(user_id: user)
+        #prior_orders = Order.find_by(user_id: user) -> old code, updated it now. oct/25
+        prior_orders = Order.where(user_id: user).all
            puts " "
            puts "Here are all previous orders affiliated with your account:"
            puts prior_orders
@@ -38,8 +39,26 @@ class CommandLineInterface
             users_prompted
         end 
 
+        def deleteaccount(user)
+           user.destroy
+           puts "Your account is now deleted."
+         end
+            
+         def usure(user)
+            prompt = TTY::Prompt.new
+            bob = user
+            puts " "
+            puts "Are you sure you want to delete your account?"
+            prompt.select("You will lose all available balance.") do |menu|
+                menu.choice "Yes", -> { deleteaccount(bob) }
+                menu.choice "No", -> { log_in }
+            end 
+         end
+            
+        
         def exit
             puts "Thanks! See ya later!"
+            puts " "
         end 
 
         def balance(userb)
@@ -77,7 +96,7 @@ class CommandLineInterface
             Order.create(scooter_id: bird.id, user_id: user.id, earnings: 5)
             Order.create(scooter_id: bird.id, user_id: user.id, earnings: 5)
             puts " "
-            puts "Thank you #{user.username}, We've added $25 to your balance!"
+            puts "Thank you #{user.username}, We've added $15 to your balance!"
             puts "Your new balance is #{user.balance}"
                 prompt.select("What would you like to do now?") do |menu|
                     puts " "
@@ -97,7 +116,7 @@ class CommandLineInterface
             Order.create(scooter_id: bird.id, user_id: user.id, earnings: 5)
             Order.create(scooter_id: bird.id, user_id: user.id, earnings: 5)
             puts " "
-            puts "Thank you #{user.username}, We've added $25 to your balance!"
+            puts "Thank you #{user.username}, We've added $35 to your balance!"
             puts "Your new balance is #{user.balance}"
                 prompt.select("What would you like to do now?") do |menu|
                     puts " "
@@ -115,10 +134,12 @@ class CommandLineInterface
                 bird = chargable_scooters.sample
                     puts "   "
                     puts "There are #{chargable_scooters.count} available scooters to charge in your area!"
+                    puts "You can pick up a max of 7 scooters at a time."
+                    puts " "
                     prompt.select("How many would you like to pick up and charge?") do |menu|
                         menu.choice "PICK UP 1 SCOOTER", -> { pickone(blanky, bird) }
                         menu.choice "PICK UP 3 SCOOTERS", -> { pickthree(blanky, bird) }
-                        menu.choice "PICK UP 7 SCOOTERS", -> { pickseven(blanky,chargable_scooters.count) }
+                        menu.choice "PICK UP 7 SCOOTERS", -> { pickseven(blanky,bird) }
                     end
         end 
        
@@ -130,7 +151,9 @@ class CommandLineInterface
                     puts "============================================================"
                     puts "We are currently only available in Atlanta and New York City."
                     puts "============================================================"
-                    key(:location).ask("Which of the two cities would you like to work in?", required: true)
+                    puts " "
+                    puts "Which of the two cities would you like to work in?"
+                    key(:location).ask("please note: response is case sensitive.", required: true)
                     puts "    "
                     puts "Thank You! Next, please type in your preffered username and password."
                     puts "    "
@@ -139,6 +162,7 @@ class CommandLineInterface
                 end
                 
                 User.create(name: charger[:name], balance: 0.0, location: charger[:location], username: charger[:username], password: charger[:password])
+                    puts ""
                     puts "Welcome #{charger[:username]}! Thanks for signing up!"
                     log_in
         end 
@@ -146,6 +170,7 @@ class CommandLineInterface
          def log_in
             prompt = TTY::Prompt.new
                 user = prompt.collect do
+                    puts " "
                     puts "Please log in."
                     puts "========="
                     key(:username).ask("Please enter your username:")
@@ -173,8 +198,9 @@ class CommandLineInterface
                                 menu.choice "View Previous Orders", -> { orders(find_result) }
                                 menu.choice "Charge Birds", -> { birds(find_result) }
                                 menu.choice "Exit", -> { exit }
+                                puts " "
+                                menu.choice "DELETE ACCOUNT", -> { usure(find_result) }
                                 end 
-                        
                         end      
         end
 end
